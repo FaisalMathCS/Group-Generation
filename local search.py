@@ -98,18 +98,25 @@ with open('data.json', 'r') as f:
     data = json.load(f)
 students_dict = data['students']
 
-num_groups = 6
+num_groups = int(input("Enter the number of groups: "))
 initial_temp = 100000
 min_temp = 1
 alpha = 0.999995
 max_iter = 1000000
+while True: 
+    problem = StudentGroupingProblem(students_dict, num_groups)
+    solution_state, solution_cost = simulated_annealing(problem, initial_temp, min_temp, alpha, max_iter)
 
-problem = StudentGroupingProblem(students_dict, num_groups)
-solution_state, solution_cost = simulated_annealing(problem, initial_temp, min_temp, alpha, max_iter)
-update_occurrences(solution_state, students_dict)
-data['students'] = students_dict
-with open('data.json', 'w') as f:
-    json.dump(data, f) 
-print("Groups:", solution_state)
-print("Cost:", solution_cost)
+
+    print("Groups:", solution_state)
+    print("Cost:", solution_cost)
+    flag = int(input("IS this group okay? enter 0 if no, 1 if yes: \t"))
+    if flag: 
+        update_occurrences(solution_state, students_dict)
+        print("New Group Occurrences has been updated!")
+        data['students'] = students_dict
+        with open('data.json', 'w') as f:
+            json.dump(data, f) 
+        break
+
 
